@@ -156,3 +156,92 @@ print(f"Epoch {epoch+1} | Train Loss: {total_loss:.4f} | Val Acc: {val_acc:.4f}"
 
 
 
+# Version B : No freezing, no layer-wise LRs needed — just a flat learning rate since nothing is pretrained
+
+model = resnet50(weights=None)
+model.fc = nn.Linear(model.fc.in_features, 102) 
+learning_rate = 1e-3
+optimizer = Adam(params=model.parameters(), lr=learning_rate)
+
+epochs = 30
+
+criterion = nn.CrossEntropyLoss()
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = model.to(device)
+print(device)
+
+# training loop:
+print("starting training looppp")
+for epoch in range(epochs):
+
+    total_loss = 0
+
+    for feature, label in train_loader:
+
+        feature, label = feature.to(device), label.to(device)
+
+        optimizer.zero_grad()
+
+        output = model(feature)
+
+        loss = criterion(output, label)
+
+        loss.backward()
+
+        optimizer.step()
+
+        total_loss = total_loss + loss.item()
+
+    print(f"Epoch {epoch+1}, Loss: {total_loss:4f}")
+
+
+
+# val loop
+
+model.eval()
+correct = 0
+total = 0
+with torch.no_grad():
+    for feature, label in val_loader:
+        feature, label = feature.to(device), label.to(device)
+        output = model(feature)
+        _, predicted = torch.max(output, 1)
+        correct += (predicted == label).sum().item()
+        total += label.size(0)
+val_acc = correct / total
+print(f"Epoch {epoch+1} | Train Loss: {total_loss:.4f} | Val Acc: {val_acc:.4f}")
+
+# output for version B :
+
+# Epoch 1, Loss: 172.387294
+# Epoch 2, Loss: 150.514360
+# Epoch 3, Loss: 136.312006
+# Epoch 4, Loss: 127.990803
+# Epoch 5, Loss: 122.688704
+# Epoch 6, Loss: 116.721842
+# Epoch 7, Loss: 114.454754
+# Epoch 8, Loss: 107.227245
+# Epoch 9, Loss: 100.680824
+# Epoch 10, Loss: 98.673928
+# Epoch 11, Loss: 95.122265
+# Epoch 12, Loss: 88.203417
+# Epoch 13, Loss: 88.697072
+# Epoch 14, Loss: 87.264764
+# Epoch 15, Loss: 84.140084
+# Epoch 16, Loss: 77.449211
+# Epoch 17, Loss: 76.697827
+# Epoch 18, Loss: 72.502982
+# Epoch 19, Loss: 73.216885
+# Epoch 20, Loss: 69.341692
+# Epoch 21, Loss: 65.362300
+# Epoch 22, Loss: 62.538006
+# Epoch 23, Loss: 61.795145
+# Epoch 24, Loss: 56.934735
+# Epoch 25, Loss: 53.967737
+# Epoch 26, Loss: 53.372801
+# Epoch 27, Loss: 51.050700
+# Epoch 28, Loss: 45.797018
+# Epoch 29, Loss: 46.424568
+# Epoch 30, Loss: 41.510976
+# Epoch 30 | Train Loss: 41.5110 | Val Acc: 0.3069
