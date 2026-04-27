@@ -122,4 +122,3 @@ print(evaluate(predictions,ground_truths))
 # they computed. You now know what that number means at the
 # implementation level.
 # ============================================================
-```
