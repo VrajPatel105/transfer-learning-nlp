@@ -7,18 +7,44 @@
 # architecture
 
 # text from https://www.reedbeta.com/blog/programmers-intro-to-unicode/
-text = "Ｕｎｉｃｏｄｅ! 🅤🅝🅘🅒🅞🅓🅔‽ 🇺‌🇳‌🇮‌🇨‌🇴‌🇩‌🇪! 😄 The very name strikes fear and awe into the hearts of programmers worldwide. We all know we ought to “support Unicode” in our software (whatever that means—like using wchar_t for all the strings, right?). But Unicode can be abstruse, and diving into the thousand-page Unicode Standard plus its dozens of supplementary annexes, reports, and notes can be more than a little intimidating. I don’t blame programmers for still finding the whole thing mysterious, even 30 years after Unicode’s inception."
-temp = text.encode("utf-8")
-print(temp)
-print('---')
-tokens = text.encode("utf-8") # raw bytes
-tokens = list(map(int, tokens)) # convert to a list of integers in range 0..255 for convenience
-print('---')
-print(text)
-print("length:", len(text))
-print('---')
-print(tokens)
-print("length:", len(tokens))
+text = "The very name strikes fear and awe into the hearts of programmers worldwide. We all know we ought to “support Unicode” in our software (whatever that means—like using wchar_t for all the strings, right?). But Unicode can be abstruse, and diving into the thousand-page Unicode Standard plus its dozens of supplementary annexes, reports, and notes can be more than a little intimidating. I don’t blame programmers for still finding the whole thing mysterious, even 30 years after Unicode’s inception."
+# print(type(text)) # string right now 
+text = text.split()
+# print(type(text)) # converting it to list 
+# main part 
+temp_text = "Hello I am vraj patel and my sister is abc patel" # temp text to try out examples :)
+# split every word into characters and mark end with </w>
+
+initial_ls = []
+
+for word in text:
+    temp_list = []
+    curr_word_len = len(word)
+    cnt = 0
+    for char in word:
+        if cnt == curr_word_len - 1:
+            str = char + '</w>'
+            temp_list.append(str)
+        else:
+            temp_list.append(char)
+        cnt += 1
+    initial_ls.append(temp_list)
+
+# our output glimpse
+# [['H', 'e', 'l', 'l', 'o</w>'], ['I</w>'], ['a', 'm</w>'], ['v', 'r', 'a', 'j</w>'], ['p', 'a', 't', 'e', 'l</w>'], ['a', 'n', 'd</w>'], ['m', 'y</w>'], ['s', 'i', 's', 't', 'e', 'r</w>'], ['i', 's</w>'], ['a', 'b', 'c</w>'], ['p', 'a', 't', 'e', 'l</w>']]
+# ab = [['H', 'e', 'l', 'l', 'o</w>'], ['I</w>'], ['a', 'm</w>'], ['v', 'r', 'a', 'j</w>'], ['p', 'a', 't', 'e', 'l</w>'], ['a', 'n', 'd</w>'], ['m', 'y</w>'], ['s', 'i', 's', 't', 'e', 'r</w>'], ['i', 's</w>'], ['a', 'b', 'c</w>'], ['p', 'a', 't', 'e', 'l</w>']]
+
+def get_pair_counts(sequences):
+    pair_counts = {}
+    for sequence in sequences: 
+        for i in range(len(sequence) - 1):
+            pair = (sequence[i], sequence[i+1])
+            if pair in pair_counts:
+                pair_counts[pair] += 1
+            else:
+                pair_counts[pair] = 1
+    return pair_counts
 
 
-# now lets write the function that wil 
+pair_ls = get_pair_counts(initial_ls)
+
